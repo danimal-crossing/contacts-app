@@ -12,4 +12,8 @@ class Contact < ApplicationRecord
     "+81 #{phone_number}"
   end
 
+  def address
+    Geocoder.search([latitude, longitude]).first.address
+  end
+
 end
