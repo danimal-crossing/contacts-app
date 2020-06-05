@@ -1,4 +1,4 @@
-{
+contact_hash = {
   id: contact.id,
   first_name: contact.first_name,
   middle_name: contact.middle_name,
@@ -9,9 +9,15 @@
   bio: contact.bio,
   latitude: contact.latitude,
   longitude: contact.longitude,
-  address: contact.address,
   formatted: {
     updated_at: contact.friendly_updated_at,
     phone_number: contact.japan_phone_number
   }
 }
+
+if contact.latitude && contact.longitude
+  contact_hash[:address] = contact.geocode_address
+end
+
+contact_hash
+
