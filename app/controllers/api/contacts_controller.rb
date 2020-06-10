@@ -1,11 +1,15 @@
 class Api::ContactsController < ApplicationController
 
   def index
-    @contacts = Contact.all
-    if params[:search]
-      @contacts = @contacts.where("first_name iLIKE ? OR last_name iLIKE ? OR middle_name iLIKE ? OR email iLIKE ? OR bio iLIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    if current_user
+      @contacts = current_user.contacts
+      if params[:search]
+        @contacts = @contacts.where("first_name iLIKE ? OR last_name iLIKE ? OR middle_name iLIKE ? OR email iLIKE ? OR bio iLIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+      end
+      render 'index.json.jb'
+    else
+      render json: []
     end
-    render 'index.json.jb'
   end
 
   def create
@@ -15,7 +19,8 @@ class Api::ContactsController < ApplicationController
       last_name: params[:last_name],
       email: params[:email],
       phone_number: params[:phone_number],
-      bio: params[:bio]
+      bio: params[:bio],
+      user_id: current_user.id
     )
     if params[:address]
       coordinates = Geocoder.coordinates(params[:address])
