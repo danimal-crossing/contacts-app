@@ -1,15 +1,17 @@
 class Api::ContactsController < ApplicationController
 
+  before_action :authenticate_user
+
   def index
-    if current_user
-      @contacts = current_user.contacts
-      if params[:search]
-        @contacts = @contacts.where("first_name iLIKE ? OR last_name iLIKE ? OR middle_name iLIKE ? OR email iLIKE ? OR bio iLIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
-      end
-      render 'index.json.jb'
-    else
-      render json: []
+    @contacts = current_user.contacts
+    if params[:group]
+      group = Group.find_by(name: params[:group])
+      @contacts = group.contacts.where(user_id: current_user.id)
     end
+    if params[:search]
+      @contacts = @contacts.where("first_name iLIKE ? OR last_name iLIKE ? OR middle_name iLIKE ? OR email iLIKE ? OR bio iLIKE ?", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%", "%#{params[:search]}%")
+    end
+    render 'index.json.jb'
   end
 
   def create

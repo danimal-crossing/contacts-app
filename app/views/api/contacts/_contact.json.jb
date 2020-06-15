@@ -13,7 +13,7 @@ contact_hash = {
     updated_at: contact.friendly_updated_at,
     phone_number: contact.japan_phone_number
   },
-  user_name: current_user.name
+  groups: contact.group_names
 }
 
 if contact.latitude && contact.longitude
